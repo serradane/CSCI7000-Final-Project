@@ -22,21 +22,21 @@ struct State {
     State() : suffixLink(NONE) {}
 };
 
-struct SuffixAutomata {
-    std::vector<State> states;
-    int transitionsCount;
-    int sink;
-    int inputSize;
+class SuffixAutomata {
+    public:
+        std::vector<State> states;
+        int transitionsCount;
+        int sink;
+        int inputSize;
+        SuffixAutomata(int size);
 
-    SuffixAutomata(int size);
+        int addState();
+        void addTransition(int from, int index, int to, bool primary);
 
-    int addState();
-    void addTransition(int from, int index, int to, bool primary);
-
-    void addLetter(char letter);
-    int update(int currentSink, char letter);
-    int split(int parent, int child, int index);
-    int getFinalStates();
+        void addLetter(char letter);
+        int update(int currentSink, char letter);
+        int split(int parent, int child, int index);
+        int getFinalStates();
 };
 
 #endif

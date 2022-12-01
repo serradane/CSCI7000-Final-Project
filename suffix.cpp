@@ -1,24 +1,69 @@
-#include "suffix.h"
+#include <bits/stdc++.h>
+#include<ext/pb_ds/tree_policy.hpp>
+#include<ext/pb_ds/assoc_container.hpp> 
+#include <stdio.h> 
+#include <math.h> 
+#include <vector>
+#include <algorithm>
+using namespace std;
 
-SuffixAutomata::SuffixAutomata(int size) {
-    // this->transitionsCount = 0;
-    // this->sink = SOURCE;
-    this->inputSize = size;
-    this->states.emplace_back();
-}
-
-
-int SuffixAutomata::addState() {
-    if (this->states.size() > this->inputSize &&
-            this->states.capacity() == this->states.size()) {
-        this->states.reserve(this->states.capacity() + (this->inputSize / 2));
+const int M = 10;
+string s;
+map<char, int> samNext[M];
+int samLink[M];
+int samLen[M];
+int samN = 1;
+int samLast = 0;
+void extends(char c) {
+    int cur = samN++;
+    samLen[cur] = samLen[samLast] + 1;
+    int p = samLast;
+    while (p != -1) {
+        if (samNext[p][c] == 0) {
+            samNext[p][c] = cur;
+            p = samLink[p];
+        } else {
+            int q = samNext[p][c];
+            if (samLen[q] == samLen[p] + 1) {
+                samLink[cur] = q;
+            } else {
+                int clone = samN ++;
+                samLink[clone] = samLink[q];
+                samNext[clone] = samNext[q];
+                samLen[clone] = samLen[q] + 1;
+                while (p != -1) {
+                    samNext[p][c] = clone;
+                    p = samLink[p];
+                }
+                samLink[q] = samLink[cur] = clone;
+            }
+            break;
+        }
     }
-    this->states.emplace_back();
-    return this->states.size() - 1;
+    samLast = cur;
 }
-
-void SuffixAutomata::addTransition(int from, int index, int to, bool primary) {
-    this->states[from].next.set(index, to);
-    this->states[from].primary[index] = primary;
-    this->transitionsCount++;
+void traverse(int p) {
+    printf("Node: %d, link: %d, len: %d, [", p, samLink[p], samLen[p]);
+    for (char c = 'a'; c <='z'; c++) {
+        if (samNext[p][c] != 0) {
+            printf("(%c %d) ", c, samNext[p][c]);
+        }
+    }
+    printf("]\n");
+}
+int main()
+{   
+    memset(samLink, 0, sizeof(samLink));
+    printf("here!!");
+    memset(samLen, 0, sizeof(samLen));
+    samLink[0] = -1;
+    std::cin >> s;
+    printf("ulan cin");
+    for (char c: s) {
+        printf("here");
+        extends(c);
+    }
+    for (int i = 0; i < samN; i++)
+        traverse(i);
+    return 0;
 }

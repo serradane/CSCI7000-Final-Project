@@ -5,6 +5,7 @@
 #include <cstdio>
 
 #include "automata.h"
+using namespace std;
 
 const unsigned int BUF_SIZE = 1<<20;
 
